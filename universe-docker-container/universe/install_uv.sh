@@ -10,7 +10,7 @@
 filetouse=""
 BUILD_URL=""
 
-for file in /shared-data/universe-install-file/*
+for file in /shared-data/mv-install-file/*
 do
     echo "Looking at ${file}"
     if [ "${file: -4}" == ".zip" ]
@@ -26,7 +26,7 @@ if [ "${BUILD_URL: -4}" == ".zip" ]
 then
    echo "Good install found."
 else
-   echo "No install file found in /shared-data/universe-install-file"
+   echo "No install file found in /shared-data/mv-install-file"
    exit 1
 fi
 
@@ -42,6 +42,8 @@ if [ "$UVHOME" == "" ]; then
   echo "$script_name: ERROR - UVHOME is not set. Please set UVHOME and PATH before invoking this script."
   exit 1
 fi
+echo "UVHOME is set to ${UVHOME}"
+#ln -s $UVHOME /usr/uv
 
 build_name=$(basename $BUILD_URL)
 
@@ -65,16 +67,19 @@ cat /dev/null > install.input
 echo "1" > install.input
 echo "1" >> install.input
 
-sh uv.load < install.input
+sh uv.load $UVHOME < install.input
 
 if [ $? -eq 0 ]; then
     echo "Install UniVerse successful."
     cd $UVHOME
     chmod +x sample/uv.rc
     rm -rf $TMP_DIR
-    touch /usr/uv/goodinstall.txt
+    touch /data/uv/goodinstall.txt
+    mkdir /usr/uvinstalled
+    date > /usr/uvinstalled/uvinstalled.txt
+ 
     exit 0
 else
     echo "Install UniVerse failed."
-    exit 1
+    exit 0
 fi

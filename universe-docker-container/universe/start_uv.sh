@@ -21,19 +21,19 @@ then
    mkdir /data
 fi
 
-# The following script will only run on a new container.  It writes out the dockersetup.txt file and therefore
-# it will only run once.
+# The follow will install Universe in the persistent data section if it is not already
+# there.  It will create UVHOME/dockeruvsetup.txt
 
-if [ ! -f "/usr/uv/dockersetup.txt" ]
+if [ ! -f "${UVHOME}/dockeruvsetup.txt" ]
 then
    chmod u+x /usr/local/bin/*uv.sh
    install_uv.sh "$BUILD_URL"
-   if [ ! -f "/usr/uv/goodinstall.txt" ]
+   if [ ! -f "/data/uv/goodinstall.txt" ]
    then
       echo "Universe not installed"
       exit 1
    fi
-   touch /usr/uv/dockersetup.txt
+   touch ${UVHOME}/dockeruvsetup.txt
    echo "*** Checking for auto-install directory ***"
 
    # The following area is an example on how to setup new accounts
@@ -54,12 +54,36 @@ then
       # replace it with a soft link to our version.
       mkdir /data/universe
       cp /shared-data/auto-install/UV.ACCOUNT /data/universe
-      rm /usr/uv/UV.ACCOUNT
-      ln -s /data/universe/UV.ACCOUNT /usr/uv/UV.ACCOUNT
+      rm $UVHOME/UV.ACCOUNT
+      ln -s /data/universe/UV.ACCOUNT $UVHOME/UV.ACCOUNT
    fi
 
 fi
 
+# This part runs if universe already exists in the persistant
+# storage area but the container/OS is new.  At this point
+# this is not supported.  You must remove/rename your /data/uv
+# directory and re-install Universe
+
+if [ ! -d "/usr/uvinstalled" ]
+then
+   echo "This is a new container with an existing universe install"
+   echo "in the persistant area.  This is not supported at this"
+   echo "time and you must rename/remove /data/uv and re-install"
+   echo "universe."
+   exit 1
+   #mkdir /usr/uvinstalled
+   #cd $UVHOME
+   #chmod +x sample/uv.rc
+   #cp /data/universe/static/.uvhome /
+   #cp /data/universe/static/.unishared /
+   #cp /data/universe/static/services /etc
+   #cp /data/universe/static/uv.rc /etc/rc.d/unit.d/uv.rc
+   #cp /data/universe/static/UniVerse.conf /etc/ld.so.conf.d/
+   #cp /data/universe/static/UniVerse_ptyhon.conf /etc/ld.so.conf/
+   #ln /data/uv/uvdlls /.uvlibs
+   #touch /usr/uvinstalled/uvinstalled.txt
+fi
 # This is an example to automatically create accounts
 # By looking for a directory you can build new accounts
 # on existing containers without a rebuild of the container
@@ -75,7 +99,7 @@ fi
 cd $UVHOME
 mkdir /tmp/uvcs
 # This line will setup debug logging for Unirpc.
-echo "uvcs 10 /tmp/uvcs/uvcs.log" > /usr/uv/serverdebug
+echo "uvcs 10 /tmp/uvcs/uvcs.log" > $UVHOME/serverdebug
 
 bin/uv -revno
 

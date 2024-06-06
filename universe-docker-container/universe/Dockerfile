@@ -2,7 +2,7 @@ FROM rockylinux/rockylinux:latest
 
 ARG BUILD_URL=''
 
-ENV UVHOME=/usr/uv
+ENV UVHOME=/data/uv
 ENV PATH="${PATH}:${UVHOME}:${UVHOME}/bin"
 
 RUN set -eux \
@@ -41,7 +41,7 @@ RUN set -eux \
     && ssh-keygen -q -N "" -t dsa -f /etc/ssh/ssh_host_dsa_key \
     && ssh-keygen -q -N "" -t rsa -f /etc/ssh/ssh_host_rsa_key \
     && mkdir /tmp_dir \
-    && echo '/usr/uv/bin/uv' >> /home/u2dev/.bash_profile \
+    && echo '/data/uv/bin/uv' >> /home/u2dev/.bash_profile \
     && /usr/sbin/sshd
 
 COPY *uv.sh /usr/local/bin/
