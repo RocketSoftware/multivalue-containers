@@ -28,7 +28,7 @@ if [ ! -f "${UVHOME}/dockeruvsetup.txt" ]
 then
    chmod u+x /usr/local/bin/*uv.sh
    install_uv.sh "$BUILD_URL"
-   if [ ! -f "/data/uv/goodinstall.txt" ]
+   if [ ! -f "${UVHOME}/goodinstall.txt" ]
    then
       echo "Universe not installed"
       exit 1
@@ -71,7 +71,7 @@ then
    echo "in the persistant area.  This is not supported at this"
    echo "time and you must rename/remove /data/uv and re-install"
    echo "universe."
-   exit 1
+#   exit 1
    #mkdir /usr/uvinstalled
    #cd $UVHOME
    #chmod +x sample/uv.rc

@@ -43,7 +43,6 @@ if [ "$UVHOME" == "" ]; then
   exit 1
 fi
 echo "UVHOME is set to ${UVHOME}"
-#ln -s $UVHOME /usr/uv
 
 build_name=$(basename $BUILD_URL)
 
@@ -74,7 +73,7 @@ if [ $? -eq 0 ]; then
     cd $UVHOME
     chmod +x sample/uv.rc
     rm -rf $TMP_DIR
-    touch /data/uv/goodinstall.txt
+    touch $UVHOME/goodinstall.txt
     mkdir /usr/uvinstalled
     date > /usr/uvinstalled/uvinstalled.txt
  

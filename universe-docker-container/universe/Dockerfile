@@ -2,7 +2,7 @@ FROM rockylinux/rockylinux:latest
 
 ARG BUILD_URL=''
 
-ENV UVHOME=/data/uv
+ENV UVHOME=/usr/uv
 ENV PATH="${PATH}:${UVHOME}:${UVHOME}/bin"
 
 RUN set -eux \
